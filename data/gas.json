@@ -1,0 +1,24 @@
+{
+  "recent": [
+    { "timestamp": "2025-11-09T12:00:00Z", "gas_gwei": 12 },
+    { "timestamp": "2025-11-09T12:00:30Z", "gas_gwei": 11 },
+    { "timestamp": "2025-11-09T12:01:00Z", "gas_gwei": 13 },
+    { "timestamp": "2025-11-09T12:01:30Z", "gas_gwei": 10 },
+    { "timestamp": "2025-11-09T12:02:00Z", "gas_gwei": 9 },
+    { "timestamp": "2025-11-09T12:02:30Z", "gas_gwei": 8 },
+    { "timestamp": "2025-11-09T12:03:00Z", "gas_gwei": 7 },
+    { "timestamp": "2025-11-09T12:03:30Z", "gas_gwei": 9 },
+    { "timestamp": "2025-11-09T12:04:00Z", "gas_gwei": 11 },
+    { "timestamp": "2025-11-09T12:04:30Z", "gas_gwei": 10 },
+    { "timestamp": "2025-11-09T12:05:00Z", "gas_gwei": 14 },
+    { "timestamp": "2025-11-09T12:05:30Z", "gas_gwei": 16 },
+    { "timestamp": "2025-11-09T12:06:00Z", "gas_gwei": 15 },
+    { "timestamp": "2025-11-09T12:06:30Z", "gas_gwei": 14 },
+    { "timestamp": "2025-11-09T12:07:00Z", "gas_gwei": 13 },
+    { "timestamp": "2025-11-09T12:07:30Z", "gas_gwei": 12 },
+    { "timestamp": "2025-11-09T12:08:00Z", "gas_gwei": 11 },
+    { "timestamp": "2025-11-09T12:08:30Z", "gas_gwei": 10 },
+    { "timestamp": "2025-11-09T12:09:00Z", "gas_gwei": 9 },
+    { "timestamp": "2025-11-09T12:09:30Z", "gas_gwei": 8 }
+  ]
+}

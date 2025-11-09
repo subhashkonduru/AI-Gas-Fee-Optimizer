@@ -1,0 +1,64 @@
+### General
+.DS_Store
+Thumbs.db
+
+### Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+### Hardhat / Ethereum
+deploy/node_modules/
+deploy/cache/
+deploy/artifacts/
+artifacts/
+cache/
+typechain/
+
+### Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+venv/
+.venv/
+env/
+ENV/
+venv*/
+backend/.venv/
+
+### Environment / Secrets (keep local only)
+*.env
+deploy/.env
+backend/.env
+frontend/.env
+
+### Build / Distribution
+dist/
+build/
+
+### Editor / OS
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+### Coverage
+.coverage
+coverage.xml
+htmlcov/
+
+### Databases
+*.sqlite3
+
+### Logs
+*.log
+
+### Lock files (optional to ignore - keep if you want reproducible installs)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
