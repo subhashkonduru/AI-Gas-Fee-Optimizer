@@ -1,50 +1,99 @@
 # Gas Whisperer — AI-Powered Gas Fee Optimizer (demo)
 
-This is a small demo scaffold that shows how an Arbitrum Stylus-style Rust contract (source included), a mocked AI backend, and a simple React frontend could work together to recommend gas prices.
+This repository is a demo scaffold that combines:
 
-Components:
-- `rust_contract/` — Rust source (Cargo project) with an `optimize_gas` function demonstrating the logic you'd compile to WASM for Stylus.
-- `backend/` — FastAPI mock service with endpoints:
-  - `POST /optimize` — Returns suggested gas price, risk flag, and optimal timestamp.
-  - `POST /explain` — Returns a plain-English explanation (mock).
-  - `GET /gas-trend` — Returns a short gas trend message (mock).
-- `data/gas.json` — Mocked recent block gas data.
-- `frontend/index.html` — Minimal React UI (CDN) that calls the backend.
+- A Rust example (`rust_contract/`) that demonstrates the same gas-optimization heuristic you'd compile to WASM for Stylus.
+- A Python FastAPI backend (`backend/`) that serves optimization, explanation and prediction endpoints.
+- A small React + Tailwind frontend (`frontend/`) served statically that calls the backend.
+- A Hardhat deploy scaffold (`deploy/`) with a sample Solidity contract and deploy scripts.
 
-Quick run (Windows PowerShell):
+What this repo shows
+- How an on-chain-aware service can suggest gas prices and timing using a simple heuristic and optional AI explanations.
+- How the Rust logic maps to the Python backend so results stay consistent for a Stylus/WASM flow.
 
-1. Start backend (recommended in a venv):
+Quick start (safe, simulated data)
+
+1) Start the backend using the mocked gas data (no RPC keys required):
 
 ```powershell
-cd "I:/Subhash Imp Projects/AI-Powered Gas Fee Optimizer on Arbitrum Stylus/backend"
-python -m venv .venv; .\.venv\Scripts\Activate.ps1
+cd "I:\Subhash Imp Projects\AI-Powered Gas Fee Optimizer on Arbitrum Stylus\backend"
+.\.venv\Scripts\Activate.ps1  # activate your virtualenv (create it if needed)
 pip install -r requirements.txt
+$env:USE_REAL_DATA = '0'  # ensure backend uses mock data
 uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-2. Open `frontend/index.html` in your browser (File -> Open) or serve it from a static server.
+2) Serve the frontend and open the UI:
 
-Notes:
-- The Rust contract is provided as source; compiling to WASM for Stylus would be the next step when you have an Arbitrum Stylus toolchain.
-- The backend uses the same gas-logic as the Rust example so results match.
- 
-Real data and AI integration
-- To fetch real recent blocks from an Arbitrum RPC, set the `RPC_URL` env var and enable `USE_REAL_DATA=1` before starting the backend.
-  Example (PowerShell):
 ```powershell
-$env:RPC_URL = 'https://arb1.arbitrum.io/rpc'
-$env:USE_REAL_DATA = '1'
-$env:OPENAI_API_KEY = '<your-openai-key>'  # optional, for AI predictions
+cd "I:\Subhash Imp Projects\AI-Powered Gas Fee Optimizer on Arbitrum Stylus\frontend"
+python -m http.server 3000
+# open http://127.0.0.1:3000 in your browser
+```
+
+3) Verify the backend returns mocked samples:
+
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/fetch-recent" -Method GET | ConvertTo-Json -Depth 5
+# expect: { "source": "mock", "recent": [ ... ] }
+```
+
+Using real RPC or AI (optional)
+
+If you'd like live Arbitrum data or OpenAI predictions, create a local `.env` file in `backend/` or set these env vars before starting the backend:
+
+- `RPC_URL` — an Arbitrum RPC endpoint (e.g. Alchemy/Infura/other)
+- `USE_REAL_DATA=1` — enables RPC fetching
+- `OPENAI_API_KEY` — optional, used by `/ai-predict`
+
+Example (PowerShell):
+
+```powershell
+cd backend
+@"
+RPC_URL=https://arb1.arbitrum.io/rpc
+USE_REAL_DATA=1
+OPENAI_API_KEY=sk-...   # optional
+"@ | Out-File -FilePath .env -Encoding utf8
+
+.\.venv\Scripts\Activate.ps1
 uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
-- New endpoints:
-  - `GET /fetch-recent?count=20` — fetches recent gas points from RPC (if enabled) or returns the mock `data/gas.json`.
-  - `POST /ai-predict?count=20` — calls OpenAI (if `OPENAI_API_KEY` is set) to return a short prediction, or falls back to a local heuristic.
 
-  Note on API keys
-  - `OPENAI_API_KEY` is read from the environment at runtime. Set it before starting the backend so the `/ai-predict` endpoint will use it. For testing you can also pass an `api_key` field in the JSON body of the `/ai-predict` POST but this is not recommended for production.
+Endpoints of interest
 
-Notes:
-- The backend will attempt to use the `web3` Python package to read recent blocks; install dependencies with `pip install -r requirements.txt` (I added `web3` and `openai`).
-- The AI integration is optional and falls back to a simple heuristic when `OPENAI_API_KEY` or `openai` package is not available.
+- `POST /optimize` — returns suggested gas (gwei), risk, human-friendly reason, and `wait_seconds` for timing.
+- `GET /fetch-recent?count=N` — returns recent gas samples; source will be `mock` or `rpc` depending on `USE_REAL_DATA`.
+- `POST /ai-predict` — calls OpenAI (if available) or falls back to a local heuristic.
+
+Hardhat deploy (local / testnet)
+
+- The `deploy/` folder contains a minimal Hardhat project and scripts. Two useful commands (from `deploy/`):
+
+```powershell
+# install deps
+cd deploy
+npm ci
+
+# deploy to a local Hardhat node (no keys needed)
+npx hardhat run --network localhost scripts/deploy.js
+
+# deploy to Arbitrum Goerli (requires deploy/.env with GOERLI_RPC_URL and DEPLOYER_KEY)
+npm run deploy:goerli
+```
+
+Security and git
+
+- A top-level `.gitignore` was added to exclude `node_modules/`, Python venvs, `.env` files and Hardhat artifacts. Add your local `.env` files (e.g. `deploy/.env`, `backend/.env`) and never commit private keys.
+
+Notes, troubleshooting, and tips
+
+- If `/fetch-recent` returns `"source":"rpc"` but with empty or tiny values, check `RPC_URL` and network availability.
+- To force mock data, set `USE_REAL_DATA=0` before starting the backend (service restart required to pick up env changes).
+- The AI integration is optional — when `OPENAI_API_KEY` is not set the `/ai-predict` endpoint returns a heuristic summary.
+
+If you'd like, I can:
+- Run the demo locally with simulated data and return screenshots / console outputs.
+- Help you create a `deploy/.env` safely (I will not ask you to paste private keys in chat).
+
 
